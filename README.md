@@ -13,13 +13,13 @@
   <sub>Kefir, Steam veya Valve ile bağlantılı değildir · resmi olmayan hayran çalışması · ICESTARONLINE</sub>
 </p>
 
-| Alan | Değer |
-|---|---|
-| **Ürün** | ROB RUN Türkçe Yama |
-| **EXE** | `ROBRUN_TR.exe` |
-| **Yayıncı (proje)** | ICESTARONLINE |
-| **Site** | https://robrunturkceyama.com/ |
-| **GitHub** | https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA |
+<table>
+  <tr><td><strong>Ürün</strong></td><td>ROB RUN Türkçe Yama</td></tr>
+  <tr><td><strong>EXE</strong></td><td><code>ROBRUN_TR.exe</code></td></tr>
+  <tr><td><strong>Yayıncı (proje)</strong></td><td>ICESTARONLINE</td></tr>
+  <tr><td><strong>Site</strong></td><td><a href="https://robrunturkceyama.com/">https://robrunturkceyama.com/</a></td></tr>
+  <tr><td><strong>GitHub</strong></td><td><a href="https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA">https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA</a></td></tr>
+</table>
 
 <br>
 
@@ -114,13 +114,13 @@ Get-FileHash ..\publish_out\ROBRUN_TR.exe -Algorithm SHA256
 
 Unofficial **Turkish localization helper** for the Steam game **ROB RUN**.
 
-| Field | Value |
-|---|---|
-| **Product** | ROB RUN Türkçe Yama |
-| **EXE** | `ROBRUN_TR.exe` |
-| **Publisher (project)** | ICESTARONLINE |
-| **Site** | https://robrunturkceyama.com/ |
-| **GitHub** | https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA |
+<table>
+  <tr><td><strong>Product</strong></td><td>ROB RUN Türkçe Yama</td></tr>
+  <tr><td><strong>EXE</strong></td><td><code>ROBRUN_TR.exe</code></td></tr>
+  <tr><td><strong>Publisher (project)</strong></td><td>ICESTARONLINE</td></tr>
+  <tr><td><strong>Site</strong></td><td><a href="https://robrunturkceyama.com/">https://robrunturkceyama.com/</a></td></tr>
+  <tr><td><strong>GitHub</strong></td><td><a href="https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA">https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA</a></td></tr>
+</table>
 
 This is **not** affiliated with Kefir, Steam, or Valve.
 
