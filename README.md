@@ -10,14 +10,14 @@
 
 <p align="center">
   <strong>Steam oyunu ROB RUN için açık kaynak, ücretsiz Türkçe dil yaması kurucusu.</strong><br>
-  <sub>Kefir, Steam veya Valve ile bağlantılı değildir · resmi olmayan hayran çalışması · ICESTAR</sub>
+  <sub>Kefir, Steam veya Valve ile bağlantılı değildir · resmi olmayan hayran çalışması · ICESTARONLINE</sub>
 </p>
 
-| | |
+| Alan | Değer |
 |---|---|
 | **Ürün** | ROB RUN Türkçe Yama |
 | **EXE** | `ROBRUN_TR.exe` |
-| **Yayıncı (proje)** | ICESTAR |
+| **Yayıncı (proje)** | ICESTARONLINE |
 | **Site** | https://robrunturkceyama.com/ |
 | **GitHub** | https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA |
 
@@ -114,11 +114,11 @@ Get-FileHash ..\publish_out\ROBRUN_TR.exe -Algorithm SHA256
 
 Unofficial **Turkish localization helper** for the Steam game **ROB RUN**.
 
-| | |
+| Field | Value |
 |---|---|
 | **Product** | ROB RUN Türkçe Yama |
 | **EXE** | `ROBRUN_TR.exe` |
-| **Publisher (project)** | ICESTAR |
+| **Publisher (project)** | ICESTARONLINE |
 | **Site** | https://robrunturkceyama.com/ |
 | **GitHub** | https://github.com/ICESTARONLINE/ROBRUN-TURKCE-YAMA |
 
