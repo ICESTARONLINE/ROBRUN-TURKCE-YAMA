@@ -1,0 +1,93 @@
+# SignPath Authenticode submission — DISABLED until approved.
+# Docs: https://docs.signpath.io/trusted-build-systems/github
+#
+# Enable by setting repository variable SIGNPATH_ENABLED=true and configuring:
+#   secrets.SIGNPATH_API_TOKEN
+#   vars.SIGNPATH_ORGANIZATION_ID
+#   vars.SIGNPATH_PROJECT_SLUG
+#   vars.SIGNPATH_SIGNING_POLICY_SLUG
+#
+# Do NOT invent IDs. Do NOT commit tokens.
+
+name: SignPath request (gated)
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build ROBRUN_TR"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  sign:
+    if: ${{ vars.SIGNPATH_ENABLED == 'true' && github.event_name == 'workflow_dispatch' }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download unsigned artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ROBRUN_TR-unsigned
+          path: unsigned
+          # For workflow_dispatch after a build: use run-id UI or combine into one workflow later.
+          # Prefer merging into build.yml once SignPath IDs exist.
+
+      - name: Prepare single-file artifact for SignPath
+        id: pack
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path sign-in | Out-Null
+          Copy-Item "unsigned/ROBRUN_TR.exe" "sign-in/ROBRUN_TR.exe" -Force
+
+      - name: Upload artifact for SignPath
+        id: upload-unsigned-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ROBRUN_TR-for-signpath
+          path: sign-in/ROBRUN_TR.exe
+          retention-days: 3
+
+      - name: Submit signing request
+        id: sign
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+
+      - name: Hash signed EXE (do not modify file)
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path signed -Filter ROBRUN_TR.exe -Recurse | Select-Object -First 1
+          if (-not $exe) { throw "Signed EXE not found" }
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $exe.FullName).Hash
+          "$hash  ROBRUN_TR.exe" | Set-Content -Encoding ascii "signed/SHA256SUMS-signed.txt"
+          Write-Host "SIGNED SHA256 $hash"
+
+      - name: Upload signed outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ROBRUN_TR-signed
+          path: |
+            signed/**
+          retention-days: 30
+
+  skipped-notice:
+    if: ${{ vars.SIGNPATH_ENABLED != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Signing disabled
+        run: |
+          echo "SignPath signing is disabled (SIGNPATH_ENABLED != true)."
+          echo "See CODE_SIGNING_POLICY.md and SIGNPATH_APPLICATION.md"

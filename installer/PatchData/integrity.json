@@ -1,0 +1,15 @@
+﻿{
+    "version":  "1.0",
+    "product":  "ROB RUN Turkce Yama",
+    "publisher":  "ICESTAR",
+    "homepage":  "https://robrunturkceyama.com/",
+    "files":  {
+                  "tr_cache_worker.exe":  "FF1723C2AF82C09DBB61C284ECC63F00896A5DEDCF307084E6352906CBD9C23F",
+                  "inbuild_assets_all_turkish_.bundle":  "ABD8CEA553491F254CDC152BC5E26D64C1708DA0AD258B4CA5296138457A149F",
+                  "localization-string-tables-turkish(turkey-republic)(tr)_assets_all_turkish_.bundle":  "D811BC6BD3DA2CF1ED0AF792B1DBE1EB50A4B5B74B760B3F4AC375394923A3AE"
+              },
+    "writeTargets":  [
+                         "%USERPROFILE%\\AppData\\LocalLow\\Kefir\\ROB RUN\\com.unity.addressables\\"
+                     ],
+    "notes":  "Steam oyun klasoru kurulumda degistirilmez; sadece Addressables onbellege yazilir."
+}

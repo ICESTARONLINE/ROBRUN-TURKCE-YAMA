@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+        <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+        <OutputType>WinExe</OutputType>
+
+        <!-- WinUI 3 -->
+        <UseWinUI>true</UseWinUI>
+        <EnableMsixTooling>true</EnableMsixTooling>
+        <WindowsPackageType>None</WindowsPackageType>
+
+        <!-- Project Options -->
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>RobRunTurkceYama</RootNamespace>
+
+        <!-- App Options -->
+        <UseRidGraph>true</UseRidGraph>
+        <Platforms>x86;x64;ARM64</Platforms>
+        <Platform Condition="'$(Platform)' == ''">x64</Platform>
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+        <ApplicationTitle>ROB RUN Türkçe Yama</ApplicationTitle>
+        <AssemblyName>ROBRUN_TR</AssemblyName>
+        <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+        <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+        <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 8">win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+
+        <!-- VersionInfo / Authenticode metadata (SmartScreen itibari) -->
+        <Version>1.0</Version>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
+        <InformationalVersion>1.0</InformationalVersion>
+        <Company>ICESTAR</Company>
+        <Authors>ICESTAR</Authors>
+        <Product>ROB RUN Türkçe Yama</Product>
+        <AssemblyTitle>ROB RUN Türkçe Yama</AssemblyTitle>
+        <Description>ROB RUN Türkçe dil yaması kurucusu. Addressables önbelleğine yazar. https://robrunturkceyama.com/</Description>
+        <Copyright>Copyright © ICESTAR</Copyright>
+        <NeutralLanguage>tr-TR</NeutralLanguage>
+
+        <!-- Single-file: sıkıştırma açık (boyut ~yarıya iner; çalışma aynı) -->
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="Assets\SplashScreen.scale-200.png" />
+        <Content Include="Assets\LockScreenLogo.scale-200.png" />
+        <Content Include="Assets\Square150x150Logo.scale-200.png" />
+        <Content Include="Assets\Square44x44Logo.scale-200.png" />
+        <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+        <Content Include="Assets\StoreLogo.png" />
+        <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+        <Content Include="Assets\AppIcon.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Assets\Donations\*.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Assets\Fonts\Rubik-BlackItalic.ttf">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Font+string Addressables cache worker (UnityPy). Extracted beside EXE at runtime. -->
+        <Content Include="PatchData\tr_cache_worker.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <ExcludeFromSingleFile>false</ExcludeFromSingleFile>
+        </Content>
+        <!-- Pre-patched TMP fonts (ÖZELLEŞTİRME Ş/İ) — copied into Addressables cache on install. -->
+        <Content Include="PatchData\inbuild_assets_all_turkish_.bundle">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <ExcludeFromSingleFile>false</ExcludeFromSingleFile>
+        </Content>
+        <Content Include="PatchData\integrity.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <ExcludeFromSingleFile>false</ExcludeFromSingleFile>
+        </Content>
+        <EmbeddedResource Include="PatchData\integrity.json">
+            <LogicalName>PatchData.integrity.json</LogicalName>
+        </EmbeddedResource>
+        <EmbeddedResource Include="PatchData\localization-string-tables-turkish(turkey-republic)(tr)_assets_all_turkish_.bundle">
+            <LogicalName>PatchData.localization-string-tables-turkish(turkey-republic)(tr)_assets_all_turkish_.bundle</LogicalName>
+        </EmbeddedResource>
+        <EmbeddedResource Include="PatchData\localization-string-tables-english(unitedstates)(en-us)_assets_all.bundle.en-original" Condition="Exists('PatchData\localization-string-tables-english(unitedstates)(en-us)_assets_all.bundle.en-original')">
+            <LogicalName>PatchData.localization-string-tables-english(unitedstates)(en-us)_assets_all.bundle.en-original</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.*" />
+        <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.*" />
+        <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.*" />
+
+        <Manifest Include="$(ApplicationManifest)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+        <ProjectCapability Include="Msix"/>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+        <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+    </PropertyGroup>
+</Project>

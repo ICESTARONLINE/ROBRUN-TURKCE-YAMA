@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RobRunTurkceYama (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "RobRunTurkceYama (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

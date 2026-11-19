@@ -1,0 +1,13 @@
+﻿Windows Defender / SmartScreen — yanlis pozitif bildirimi
+========================================================
+1) https://www.microsoft.com/wdsi/filesubmission
+2) Software developer → Submit a file
+3) Dosya: ROBRUN_TR.exe
+4) SHA-256: 0C6B9B4CE96BA35CC9FA5BECE0AB4965E9559A7D4E50913808D3DDBB5C49AB50
+5) Aciklama (EN/TR):
+   Fan-made Turkish localization installer for the Steam game ROB RUN.
+   Writes only to %USERPROFILE%\AppData\LocalLow\Kefir\ROB RUN\com.unity.addressables\
+   Does not modify Steam game binaries. No admin required. Publisher: ICESTAR.
+   Homepage: https://robrunturkceyama.com/
+
+Authenticode: OV/EV sertifikasi ile imzala (sign_exe.ps1).
