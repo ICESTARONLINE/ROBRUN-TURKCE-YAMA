@@ -1,0 +1,89 @@
+# --- Build / publish ---
+**/bin/
+**/obj/
+**/publish/
+publish_out/
+installer/release/*.exe
+*.user
+*.suo
+.vs/
+.idea/
+
+# --- Python ---
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+tools/py312/
+tools/tr_worker/build/
+tools/tr_worker/dist/
+*.egg-info/
+
+# --- Secrets / local env ---
+.env
+.env.*
+*.pfx
+*.p12
+*.key
+*.pem
+!docs/**/*.pem.example
+CODESIGN*
+**/secrets/
+**/local.settings.json
+
+# --- Produced EXEs ---
+ROBRUN_TR.exe
+**/ROBRUN_TR.exe
+tr_cache_worker.exe
+**/tr_cache_worker.exe
+installer/PatchData/tr_cache_worker.exe
+
+# --- Game / copyrighted / large binary payloads (NOT MIT) ---
+# These are derivative of ROB RUN (Kefir) or extracted game data.
+# Place locally under installer/PatchData/ — see PatchData/README.md
+installer/PatchData/*.bundle
+installer/PatchData/*.bundle.*
+*.bundle
+StandaloneWindows64/
+ROB RUN.exe
+**/ROB RUN.exe
+inbuild_assets_all*.bundle
+localization-string-tables-*.bundle
+catalog_*.bin
+catalog_*.hash
+music.wav
+music.mp3
+
+# --- Third-party extracted / reverse dumps ---
+extracted/
+tools/RobRun_TR*
+RobRun_TR/
+_fake_game/
+_logo_work/
+patch/
+
+# --- Site: NOT open-source (private hosting only) ---
+website/
+website-github/
+
+# --- Local IDE ---
+.cursor/
+.vscode/
+
+# --- OS / junk ---
+Thumbs.db
+Desktop.ini
+*.log
+*.tmp
+.DS_Store
+
+# --- Screenshots / scratch ---
+Screenshot_*.png
+adsa.png
+asasa.png
+caca.png
+lastt.png
+tr.png
+va.png
+xaxa.png
+robrun_tr.png

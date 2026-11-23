@@ -1,0 +1,143 @@
+# Trusted-build oriented: GitHub-hosted Windows runner only.
+# SignPath submission is NOT enabled here — see signpath-request.yml
+name: Build ROBRUN_TR
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Optional PatchData download (maintainer secret)
+        shell: pwsh
+        env:
+          PATCHDATA_URL: ${{ secrets.PATCHDATA_URL }}
+        run: |
+          New-Item -ItemType Directory -Force -Path "installer/PatchData" | Out-Null
+          if ([string]::IsNullOrWhiteSpace($env:PATCHDATA_URL)) {
+            Write-Host "PATCHDATA_URL not set — will build only if local PatchData exists in repo/cache."
+            exit 0
+          }
+          $zip = "patchdata.zip"
+          Invoke-WebRequest -Uri $env:PATCHDATA_URL -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath "installer/PatchData" -Force
+          Remove-Item $zip -Force
+
+      - name: Build tr_cache_worker (best effort)
+        id: worker
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "tools/tr_worker/font_tr.bin")) {
+            Write-Warning "font_tr.bin missing (not in public repo) — skip worker build."
+            echo "built=false" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+          cd tools/tr_worker
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+          if (Test-Path ".\tr_cache_worker.spec") {
+            pyinstaller tr_cache_worker.spec --noconfirm
+            if (Test-Path ".\dist\tr_cache_worker.exe") {
+              New-Item -ItemType Directory -Force -Path "..\..\installer\PatchData" | Out-Null
+              Copy-Item ".\dist\tr_cache_worker.exe" "..\..\installer\PatchData\tr_cache_worker.exe" -Force
+              echo "built=true" >> $env:GITHUB_OUTPUT
+            } else {
+              echo "built=false" >> $env:GITHUB_OUTPUT
+            }
+          } else {
+            echo "built=false" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Check PatchData presence
+        id: patchdata
+        shell: pwsh
+        run: |
+          $worker = Test-Path "installer/PatchData/tr_cache_worker.exe"
+          $bundles = @(Get-ChildItem "installer/PatchData" -Filter "*.bundle" -ErrorAction SilentlyContinue)
+          $ok = $worker -and ($bundles.Count -ge 1)
+          echo "complete=$($ok.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          if (-not $ok) {
+            Write-Warning "Incomplete PatchData — skipping EXE publish (expected on public source-only repo)."
+          }
+
+      - name: Publish ROBRUN_TR.exe
+        if: steps.patchdata.outputs.complete == 'true'
+        shell: pwsh
+        run: |
+          dotnet publish "installer/RobRunTurkceYama.csproj" `
+            -c Release -r win-x64 -p:Platform=x64 `
+            --self-contained true `
+            -o "artifacts/unsigned"
+
+      - name: SHA256 + release metadata
+        if: steps.patchdata.outputs.complete == 'true'
+        shell: pwsh
+        run: |
+          $exe = "artifacts/unsigned/ROBRUN_TR.exe"
+          if (-not (Test-Path $exe)) { throw "EXE missing" }
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $exe).Hash
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          "$hash  ROBRUN_TR.exe" | Set-Content -Encoding ascii "artifacts/SHA256SUMS.txt"
+          $ver = "1.0"
+          @{
+            version = $ver
+            sha256 = $hash
+            downloadUrl = "https://github.com/${{ github.repository }}/releases/latest/download/ROBRUN_TR.exe"
+            notes = "Unsigned CI artifact. Not Authenticode-signed unless SignPath job ran."
+            product = "ROB RUN Turkce Yama"
+            publisher = "ICESTAR"
+            commit = "${{ github.sha }}"
+            signed = $false
+          } | ConvertTo-Json | Set-Content -Encoding utf8 "artifacts/release.json"
+          Write-Host "SHA256 $hash"
+
+      - name: Upload unsigned artifact (SignPath-compatible)
+        if: steps.patchdata.outputs.complete == 'true'
+        id: upload-unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: ROBRUN_TR-unsigned
+          path: |
+            artifacts/unsigned/ROBRUN_TR.exe
+            artifacts/SHA256SUMS.txt
+            artifacts/release.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Record artifact id
+        if: steps.patchdata.outputs.complete == 'true'
+        shell: pwsh
+        run: |
+          echo "Uploaded artifact-id=${{ steps.upload-unsigned.outputs.artifact-id }}"
+
+      - name: Source-only CI notice
+        if: steps.patchdata.outputs.complete != 'true'
+        shell: pwsh
+        run: |
+          Write-Host "Public checkout has no PatchData/font_tr.bin — CI green without publishing EXE."
+          Write-Host "Release EXE is published manually / via maintainer PATCHDATA_URL secret."
